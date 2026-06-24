@@ -113,7 +113,7 @@ async function checkAuth(requiredRole = null) {
 // ==========================================
 async function recuperarContrasenaGenerica(emailUsuario) {
     try {
-        // A. Enviamos la alerta a tu correo por EmailJS para que estés enterado
+        // 1. Enviamos la alerta a tu correo por EmailJS
         if (window.emailjs) {
             const templateParams = {
                 nuevo_nombre: "Solicitud de Restablecimiento",
@@ -121,29 +121,40 @@ async function recuperarContrasenaGenerica(emailUsuario) {
                 nueva_organizacion: "N/A",
                 nuevo_telefono: "N/A",
                 enlace_aprobacion: `${window.location.origin}/admin.html`,
-                // Agregamos una nota para que en tu plantilla sepas que es un blanqueo
-                nota_adicional: "El usuario solicitó recuperar contraseña. Su clave se restableció automáticamente a: 123456"
+                nota_adicional: `El usuario solicitó recuperar contraseña. Por favor, ingresá a Supabase Auth y cámbiasela manualmente a: 123456`
             };
 
-            // Usamos tus mismas credenciales que ya funcionan
             const SERVICE_ID = 'service_podqhnk'; 
             const TEMPLATE_ID = 'template_djsa7nr';
             const PUBLIC_KEY = '4lUPQo1047qOFaEAC'; 
 
             await window.emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
-            console.log("Notificación de recuperación enviada al Administrador.");
         }
 
-        // B. Le avisamos al usuario que ya puede entrar
-        alert("¡Solicitud procesada! Tu contraseña temporal ha sido restablecida a: 123456\n\nPor seguridad, inicia sesión y cámbiala desde tu panel.");
+        // 2. Cartel aclaratorio para el usuario
+        alert("¡Solicitud enviada al Administrador!\n\nTu clave está siendo restablecida a '123456'. Si no podés ingresar de inmediato, reintentá en unos minutos cuando el administrador confirme el blanqueo.");
         return { error: null };
 
     } catch (error) {
-        console.error("Error al procesar la recuperación:", error.message);
-        alert("No se pudo procesar la solicitud: " + error.message);
+        console.error("Error:", error.message);
         return { error };
     }
 }
-
-// Exponer la función globalmente
 window.recuperarContrasenaGenerica = recuperarContrasenaGenerica;
+
+async function actualizarMiContrasena(nuevaClave) {
+    try {
+        const { data, error } = await window.redSupabase.auth.updateUser({
+            password: nuevaClave
+        });
+
+        if (error) throw error;
+
+        alert("¡Contraseña actualizada con éxito!");
+        return { data, error: null };
+    } catch (error) {
+        alert("Error al cambiar la contraseña: " + error.message);
+        return { data: null, error };
+    }
+}
+window.actualizarMiContrasena = actualizarMiContrasena;
