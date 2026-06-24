@@ -26,6 +26,7 @@
         .sidebar {
             width: 260px; background-color: var(--primary); color: var(--bg-white);
             padding: 30px 20px; display: flex; flex-direction: column; justify-content: space-between;
+            flex-shrink: 0;
         }
         .sidebar-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; margin-bottom: 40px; }
         .sidebar-menu { list-style: none; flex-grow: 1; }
@@ -35,30 +36,93 @@
         }
         .sidebar-menu li a:hover, .sidebar-menu li.active a { background-color: var(--primary-light); color: var(--bg-white); }
 
-        .main-content { flex-grow: 1; padding: 40px; overflow-y: auto; }
+        .main-content { flex-grow: 1; padding: 40px; overflow-y: auto; width: 100%; }
         .header-section { margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
 
-        /* Tablas de Gestión */
+        /* Contenedor adaptativo de tablas */
         .table-container {
             background: var(--bg-white); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 20px; box-shadow: 0 4px 15px rgba(30, 70, 32, 0.02);
+            overflow: hidden;
         }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
         th { padding: 12px; border-bottom: 2px solid var(--border); color: var(--primary); font-weight: 600; }
         td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
         tr { transition: background-color 0.2s; }
         tr:hover { background-color: #fafafa; }
 
-        /* select de roles rápido */
-        .select-rol { padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: #f7fafc; font-size: 13px; }
+        .select-rol { padding: 6px; border: 1px solid var(--border); border-radius: 6px; background: #f7fafc; font-size: 13px; width: 100%; max-width: 140px; }
         
         .btn-status {
             padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold;
             cursor: pointer; border: none; transition: background 0.2s;
-            display: inline-flex; align-items: center; gap: 4px;
+            display: inline-flex; align-items: center; gap: 4px; justify-content: center;
+            min-width: 100px;
         }
-        .btn-active { background: #e6fffa; color: var(--success); }
-        .btn-suspended { background: #fff5f5; color: var(--danger); }
+        .btn-active { background: #e6fffa; color: var(--success); border: 1px solid #b2f5ea; }
+        .btn-suspended { background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; }
+
+        /* ==========================================================================
+           DISEÑO ULTRA-RESPONSIVE PARA PANTALLAS CHICAS / CELULARES
+           ========================================================================== */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; padding: 20px; }
+            .sidebar-brand { margin-bottom: 15px; }
+            .sidebar-menu { display: flex; gap: 10px; flex-wrap: wrap; }
+            .sidebar-menu li { margin-bottom: 0; }
+            .main-content { padding: 20px; }
+
+            /* Desarmamos la tabla rígida para transformarla en bloques/tarjetas verticales */
+            table, thead, tbody, th, td, tr { 
+                display: block !important; 
+                width: 100% !important;
+            }
+            
+            thead { 
+                display: none !important; /* Ocultamos la cabecera original */
+            }
+            
+            #usersTableBody tr {
+                margin-bottom: 20px !important;
+                border: 1px solid var(--border) !important;
+                padding: 12px !important;
+                background: var(--bg-white) !important;
+                border-radius: var(--radius) !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.02) !important;
+            }
+            
+            #usersTableBody td {
+                text-align: right !important;
+                padding: 10px 5px !important;
+                position: relative !important;
+                border: none !important;
+                border-bottom: 1px dashed #f1f5f9 !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+            }
+            
+            #usersTableBody td:last-child {
+                border-bottom: none !important;
+                padding-top: 12px !important;
+            }
+            
+            /* Inyectamos dinámicamente los títulos a la izquierda */
+            #usersTableBody td::before {
+                content: attr(data-label) !important;
+                font-weight: bold !important;
+                color: var(--text-muted) !important;
+                text-align: left !important;
+                padding-right: 15px !important;
+                display: inline-block !important;
+            }
+
+            .select-rol { max-width: 100%; }
+            .btn-status { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -86,22 +150,27 @@
             <h3 style="color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="users"></i> Miembros e Instituciones Vinculadas
             </h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Organización / Vet</th>
-                        <th>Teléfono</th>
-                        <th>Rango / Rol</th>
-                        <th>Estado de Acceso</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTableBody">
-                    <tr>
-                        <td colspan="5" style="color: var(--text-muted); text-align: center;">Cargando padrón de usuarios...</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Organización / Vet</th>
+                            <th>Teléfono</th>
+                            <th>Rango / Rol</th>
+                            <th>Estado de Acceso</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="5" style="color: var(--text-muted); text-align: center; padding: 30px;">
+                                <i data-lucide="loader-2" style="animation: spin 1s linear infinite; margin-bottom: 10px;"></i>
+                                <br>Cargando padrón de usuarios...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -109,5 +178,14 @@
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/admin.js"></script>
+    <script>
+        // Asegura el renderizado de iconos nativo al terminar de procesar el DOM
+        document.addEventListener("DOMContentLoaded", function() {
+            if (window.lucide) { lucide.createIcons(); }
+        });
+    </script>
+    <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </body>
 </html>
