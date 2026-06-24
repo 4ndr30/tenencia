@@ -199,6 +199,9 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
             </form>
+            <div style="text-align: center; margin-top: 15px;">
+    <a href="#" id="btnOlvideClave" style="color: #3182ce; text-decoration: none; font-size: 0.9rem;">¿Olvidaste tu contraseña?</a>
+</div>
 
             <div class="auth-footer">
                 ¿Tu organización no tiene cuenta? <a href="registro.html">Registrate acá</a>
@@ -269,6 +272,23 @@
             // Si está todo correcto, avanza al panel principal
             window.location.href = 'dashboard.html';
         });
+        // Escuchador para activar la recuperación que pusiste en auth.js
+document.getElementById('btnOlvideClave').addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    // Le pedimos el correo al usuario en un cuadro flotante
+    const email = prompt("Por favor, ingresá el correo electrónico de tu cuenta:");
+    
+    if (!email) return; // Si cancela, no hace nada
+    
+    if (email.trim() === "") {
+        alert("Debes ingresar un correo válido.");
+        return;
+    }
+
+    // Llama de forma directa a la función que acabás de pegar en auth.js
+    await window.recuperarContrasenaGenerica(email.trim());
+});
     </script>
 </body>
 </html>

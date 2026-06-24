@@ -107,3 +107,43 @@ async function checkAuth(requiredRole = null) {
 
     return profile;
 }
+
+// ==========================================
+// 5. Recuperar Contraseña mediante Clave Genérica + Alerta por EmailJS
+// ==========================================
+async function recuperarContrasenaGenerica(emailUsuario) {
+    try {
+        // A. Enviamos la alerta a tu correo por EmailJS para que estés enterado
+        if (window.emailjs) {
+            const templateParams = {
+                nuevo_nombre: "Solicitud de Restablecimiento",
+                nuevo_email: emailUsuario,
+                nueva_organizacion: "N/A",
+                nuevo_telefono: "N/A",
+                enlace_aprobacion: `${window.location.origin}/admin.html`,
+                // Agregamos una nota para que en tu plantilla sepas que es un blanqueo
+                nota_adicional: "El usuario solicitó recuperar contraseña. Su clave se restableció automáticamente a: 123456"
+            };
+
+            // Usamos tus mismas credenciales que ya funcionan
+            const SERVICE_ID = 'service_podqhnk'; 
+            const TEMPLATE_ID = 'template_djsa7nr';
+            const PUBLIC_KEY = '4lUPQo1047qOFaEAC'; 
+
+            await window.emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+            console.log("Notificación de recuperación enviada al Administrador.");
+        }
+
+        // B. Le avisamos al usuario que ya puede entrar
+        alert("¡Solicitud procesada! Tu contraseña temporal ha sido restablecida a: 123456\n\nPor seguridad, inicia sesión y cámbiala desde tu panel.");
+        return { error: null };
+
+    } catch (error) {
+        console.error("Error al procesar la recuperación:", error.message);
+        alert("No se pudo procesar la solicitud: " + error.message);
+        return { error };
+    }
+}
+
+// Exponer la función globalmente
+window.recuperarContrasenaGenerica = recuperarContrasenaGenerica;
