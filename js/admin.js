@@ -1,11 +1,6 @@
 // ==========================================
 // JS/ADMIN.JS
-// Operaciones de moderación global
-// ==========================================
-
-// ==========================================
-// JS/ADMIN.JS
-// Operaciones de moderación global
+// Operaciones de moderación global (Corregido)
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,17 +30,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 });
 
-// ... (Todo el resto de las funciones cargarMiembros, cambiarRol, etc. quedan EXACTAMENTE IGUAL)
-
 // FUNCIÓN: Renderizar todos los miembros del sistema
 async function cargarMiembros() {
     const tbody = document.getElementById('usersTableBody');
     
-    // CAPTURAR EL ID DESTACADO DESDE LA URL (EmailJS link)
+    // Capturar el ID destacado desde la URL (EmailJS link)
     const urlParams = new URLSearchParams(window.location.search);
     const usuarioDestacadoId = urlParams.get('usuario_id');
     
-    const { data: perfiles, error } = await window.supabaseClient
+    // CORRECCIÓN: Se cambió window.supabaseClient por window.redSupabase
+    const { data: perfiles, error } = await window.redSupabase
         .from('profiles')
         .select('*')
         .order('nombre_completo', { ascending: true });
@@ -67,8 +61,8 @@ async function cargarMiembros() {
         
         // Si este usuario es el que viene en el correo, lo resaltamos visualmente
         if (usuarioDestacadoId && p.id === usuarioDestacadoId) {
-            tr.style.backgroundColor = '#fffbeb'; // Fondo amarillo muy suave
-            tr.style.borderLeft = '4px solid var(--accent)'; // Línea indicadora terracota
+            tr.style.backgroundColor = '#fffbeb'; 
+            tr.style.borderLeft = '4px solid var(--accent)'; 
         }
         
         // Selector dinámico para cambiar el rol del miembro
@@ -85,7 +79,6 @@ async function cargarMiembros() {
             ? `<button class="btn-status btn-active" onclick="toggleEstado('${p.id}', false)"><i data-lucide="unlock" style="width:12px;height:12px;display:inline;vertical-align:middle;"></i> Activo</button>`
             : `<button class="btn-status btn-suspended" onclick="toggleEstado('${p.id}', true)"><i data-lucide="lock" style="width:12px;height:12px;display:inline;vertical-align:middle;"></i> Suspendido</button>`;
 
-        // CORRECCIÓN AQUÍ: Se envolvió el nombre correctamente dentro de un <td>
         tr.innerHTML = `
             <td><strong>${p.nombre_completo}</strong></td>
             <td>${p.organizacion || '<i>No declarada</i>'}</td>
@@ -101,7 +94,8 @@ async function cargarMiembros() {
 
 // ACCIÓN: Modificar Rol en la DB
 async function cambiarRol(userId, nuevoRol) {
-    const { error } = await window.supabaseClient
+    // CORRECCIÓN: Se cambió window.supabaseClient por window.redSupabase
+    const { error } = await window.redSupabase
         .from('profiles')
         .update({ rol: nuevoRol })
         .eq('id', userId);
@@ -113,9 +107,10 @@ async function cambiarRol(userId, nuevoRol) {
     }
 }
 
-// ACCIÓN: Suspender / Habilitar cuenta (Modifica campo 'activo')
+// ACCIÓN: Suspender / Habilitar cuenta
 async function toggleEstado(userId, nuevoEstado) {
-    const { error } = await window.supabaseClient
+    // CORRECCIÓN: Se cambió window.supabaseClient por window.redSupabase
+    const { error } = await window.redSupabase
         .from('profiles')
         .update({ activo: nuevoEstado })
         .eq('id', userId);
