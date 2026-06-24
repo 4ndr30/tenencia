@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Red de Resguardo Animal</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e4620;
+            --primary-light: #2c5e2f;
+            --accent: #c87a53;
+            --bg-crema: #fdfbf7;
+            --bg-white: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --danger: #e53e3e;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-crema);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--bg-white);
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 20px rgba(30, 70, 32, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: var(--primary);
+            font-size: 24px;
+            margin-top: 10px;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: var(--bg-white);
+            box-shadow: 0 0 0 3px rgba(30, 70, 32, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--bg-white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert-danger { background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; }
+        .alert-success { background: #f0fff4; color: var(--success); border: 1px solid #c6f6d5; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i data-lucide="paw-print" style="width: 48px; height: 48px; color: var(--accent);"></i>
+                <h1>Unirse a la Red</h1>
+                <p>Crea una cuenta para tu organización o veterinaria</p>
+            </div>
+
+            <div id="alert" class="alert alert-danger"></div>
+            <div id="success" class="alert alert-success"></div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo</label>
+                    <input type="text" id="nombre" required placeholder="Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="organizacion">Organización / Veterinaria</label>
+                    <input type="text" id="organizacion" required placeholder="Fundación Patitas / Vet Central">
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono de Contacto</label>
+                    <input type="tel" id="telefono" required placeholder="11 2345-6789">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required placeholder="contacto@entidad.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required placeholder="Mínimo 6 caracteres">
+                </div>
+                <button type="submit" class="btn btn-primary">Solicitar Registro</button>
+            </form>
+
+            <div class="auth-footer">
+                ¿Ya formás parte? <a href="index.html">Iniciá sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    
+    <script>
+        // Inicializar iconos estéticos
+        lucide.createIcons();
+        
+        // Inicializar EmailJS de manera global con tu clave pública
+        // NOTA: Podés poner tu PUBLIC_KEY acá también para asegurar la carga inmediata
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init("4lUPQo1047qOFaEAC"); 
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const alertDiv = document.getElementById('alert');
+            const successDiv = document.getElementById('success');
+            
+            alertDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            const data = {
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                nombre: document.getElementById('nombre').value.trim(),
+                organizacion: document.getElementById('organizacion').value.trim(),
+                telefono: document.getElementById('telefono').value.trim()
+            };
+
+            // Llamamos a la función de registerUser dentro de js/auth.js
+            const { error } = await registerUser(data);
+            
+            if (error) {
+                alertDiv.style.display = 'block';
+                alertDiv.textContent = error.message;
+            } else {
+                successDiv.style.display = 'block';
+                // Cambiado para reflejar el proceso real de auditoría de cuentas pendientes
+                successDiv.textContent = "¡Solicitud recibida correctamente! Te notificaremos por mail en cuanto el administrador valide tu cuenta.";
+                document.getElementById('registerForm').reset();
+            }
+        });
+    </script>
+</body>
+</html>
