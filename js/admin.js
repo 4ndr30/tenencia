@@ -3,21 +3,39 @@
 // Operaciones de moderación global
 // ==========================================
 
-document.addEventListener('DOMContentLoaded', async () => {
+// ==========================================
+// JS/ADMIN.JS
+// Operaciones de moderación global
+// ==========================================
+
+document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
     
-    // Validar de forma estricta que quien entra tenga rango de 'admin'
-    const perfil = await checkAuth('admin');
-    if (!perfil) return;
+    // Le damos 500 milisegundos a las librerías para que se inicialicen bien
+    setTimeout(async () => {
+        try {
+            // Validar de forma estricta que quien entra tenga rango de 'admin'
+            const perfil = await checkAuth('admin');
+            if (!perfil) return;
 
-    // Cargar la lista inicial de perfiles
-    await cargarMiembros();
+            // Cargar la lista inicial de perfiles
+            await cargarMiembros();
 
-    document.getElementById('btnLogout').addEventListener('click', async (e) => {
-        e.preventDefault();
-        await logoutUser();
-    });
+            document.getElementById('btnLogout').addEventListener('click', async (e) => {
+                e.preventDefault();
+                await logoutUser();
+            });
+        } catch (err) {
+            console.error("Error al inicializar el panel:", err);
+            const tbody = document.getElementById('usersTableBody');
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color: var(--danger); text-align: center;">Error de inicialización: ${err.message}</td></tr>`;
+            }
+        }
+    }, 500);
 });
+
+// ... (Todo el resto de las funciones cargarMiembros, cambiarRol, etc. quedan EXACTAMENTE IGUAL)
 
 // FUNCIÓN: Renderizar todos los miembros del sistema
 async function cargarMiembros() {
