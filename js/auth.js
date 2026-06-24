@@ -12,19 +12,32 @@ async function loginUser(email, password) {
 }
 
 // 2. Registrar usuario + Alerta automática al Administrador por EmailJS
+// ==========================================
+// FUNCIÓN DE REGISTRO EN JS/AUTH.JS
+// ==========================================
 async function registerUser(userData) {
-    // A. Registramos al usuario en la autenticación de Supabase
-    const { data, error } = await window.redSupabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-            data: {
-                nombre_completo: userData.nombre,
-                organizacion: userData.organizacion,
-                telefono: userData.telefono
+    try {
+        const { data, error } = await window.redSupabase.auth.signUp({
+            email: userData.email,
+            password: userData.password,
+            // AQUÍ ESTÁ EL TRUCO: Pasarle los metadatos exactos que espera el Trigger
+            options: {
+                data: {
+                    nombre_completo: userData.nombre, // Mapea 'nombre' a 'nombre_completo'
+                    organizacion: userData.organizacion,
+                    telefono: userData.telefono
+                }
             }
-        }
-    });
+        });
+
+        if (error) throw error;
+        return { data, error: null };
+
+    } catch (error) {
+        console.error("Error en registerUser:", error.message);
+        return { data: null, error };
+    }
+}
 
     // Si hubo un error en Supabase (ej: contraseña corta, mail ya registrado), lo cortamos acá
     if (error) {
