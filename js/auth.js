@@ -72,7 +72,7 @@ async function registerUser(userData) {
 // 3. Cerrar sesión
 async function logoutUser() {
     await window.redSupabase.auth.signOut();
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
 
 // 4. Proteger vistas y obtener perfil actual
@@ -80,7 +80,7 @@ async function checkAuth(requiredRole = null) {
     const { data: { session } } = await window.redSupabase.auth.getSession();
     
     if (!session) {
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return null;
     }
 
@@ -91,7 +91,7 @@ async function checkAuth(requiredRole = null) {
 
     if (error || !profile || !profile.activo) {
         await window.redSupabase.auth.signOut();
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
         return null;
     }
 
