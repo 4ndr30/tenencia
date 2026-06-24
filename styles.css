@@ -152,3 +152,51 @@ body {
     color: var(--verde-hover);
     border: 1px solid #c2e7cc;
 }
+/* ==========================================
+   DISEÑO RESPONSIVE PARA EL PANEL ADMIN
+   ========================================== */
+
+/* Asegura que el contenedor de la tabla permita scroll lateral en pantallas chicas */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+/* En celulares transformamos la tabla en "tarjetas" verticales */
+@media (max-width: 768px) {
+    #usersTableBody tr {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-card, #ffffff);
+        margin-bottom: 15px;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+    }
+
+    #usersTableBody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border: none;
+        text-align: right;
+    }
+
+    /* Creamos etiquetas automáticas para saber qué es cada dato */
+    #usersTableBody td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: var(--text-muted, #64748b);
+        text-align: left;
+        padding-right: 10px;
+    }
+    
+    /* Ocultamos la cabecera vieja de la tabla que ya no se entiende */
+    table thead {
+        display: none;
+    }
+}

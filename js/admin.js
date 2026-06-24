@@ -80,11 +80,11 @@ async function cargarMiembros() {
             : `<button class="btn-status btn-suspended" onclick="toggleEstado('${p.id}', true)"><i data-lucide="lock" style="width:12px;height:12px;display:inline;vertical-align:middle;"></i> Suspendido</button>`;
 
         tr.innerHTML = `
-            <td><strong>${p.nombre_completo}</strong></td>
-            <td>${p.organizacion || '<i>No declarada</i>'}</td>
-            <td>${p.telefono || '<i>Sin registro</i>'}</td>
-            <td>${selectRol}</td>
-            <td>${btnEstado}</td>
+            <td data-label="Nombre"><strong>${p.nombre_completo}</strong></td>
+            <td data-label="Organización">${p.organizacion || '<i>No declarada</i>'}</td>
+            <td data-label="Teléfono">${p.telefono || '<i>Sin registro</i>'}</td>
+            <td data-label="Rol">${selectRol}</td>
+            <td data-label="Estado">${btnEstado}</td>
         `;
         tbody.appendChild(tr);
     });
@@ -109,16 +109,20 @@ async function cambiarRol(userId, nuevoRol) {
 
 // ACCIÓN: Suspender / Habilitar cuenta
 async function toggleEstado(userId, nuevoEstado) {
-    // CORRECCIÓN: Se cambió window.supabaseClient por window.redSupabase
-    const { error } = await window.redSupabase
-        .from('profiles')
-        .update({ activo: nuevoEstado })
-        .eq('id', userId);
+    try {
+        const { error } = await window.redSupabase
+            .from('profiles')
+            .update({ activo: nuevoEstado })
+            .eq('id', userId);
 
-    if (error) {
-        alert("Error de red: " + error.message);
-    } else {
-        await cargarMiembros();
+        if (error) {
+            alert("Supabase rechazó el cambio: " + error.message);
+        } else {
+            alert(nuevoEstado ? "Cuenta Activada con éxito." : "Cuenta Suspendida.");
+            await cargarMiembros(); // Recarga la lista en pantalla
+        }
+    } catch (e) {
+        console.error("Error en toggleEstado:", e);
     }
 }
 
