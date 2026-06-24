@@ -117,6 +117,7 @@
             display: flex;
             align-items: center;
             padding: 4px;
+            transition: color 0.2s;
         }
 
         .btn-toggle-eye:hover {
@@ -165,6 +166,7 @@
             font-size: 14px;
             margin-bottom: 20px;
             display: none;
+            line-height: 1.4;
         }
         .alert-danger { background: #fff5f5; color: var(--danger); border: 1px solid #fed7d7; }
     </style>
@@ -210,16 +212,20 @@
     <script>
         lucide.createIcons();
 
-        // LÓGICA INTERNA PARA ALTERNAR EL OJITO
+        // CORRECCIÓN DIRECTA EN LA VARIABLE DEL OJITO
         const btnTogglePassword = document.getElementById('btnTogglePassword');
         const passwordInput = document.getElementById('password');
         const eyeIcon = document.getElementById('eyeIcon');
 
         btnTogglePassword.addEventListener('click', () => {
-            const isPassword = passwordInput.getAttribute('type') === 'password';
-            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-            eyeIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
-            lucide.createIcons(); // Forzamos el renderizado del nuevo icono
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
         });
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -230,19 +236,38 @@
             
             alertDiv.style.display = 'none';
             
-            const { error } = await loginUser(email, password);
+            const { data, error } = await loginUser(email, password);
+            
             if (error) {
                 alertDiv.style.display = 'block';
-                
-                // Traducimos los mensajes crudos del inglés que vienen de Supabase
-                if (error.message.includes("Invalid login credentials") || error.message.includes("Email not confirmed")) {
-                    alertDiv.textContent = "El correo electrónico o la contraseña son incorrectos, o tu cuenta está pendiente de activación.";
+                if (error.message.includes("Invalid login credentials")) {
+                    alertDiv.textContent = "El correo electrónico o la contraseña son incorrectos.";
                 } else {
                     alertDiv.textContent = error.message;
                 }
-            } else {
-                window.location.href = 'dashboard.html';
+                return;
             }
+
+            // CONTROL ADICIONAL DE ESTADO DE AUDITORÍA DESDE LA BASE DE DATOS
+            // Si el login fue correcto en Supabase Auth, verificamos si su perfil fue aprobado en 'profiles'
+            if (data && data.user) {
+                const { data: perfil, error: perfilError } = await window.redSupabase
+                    .from('profiles')
+                    .select('activo')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (perfilError || !perfil || !perfil.activo) {
+                    // Si no está activo, lo deslogueamos inmediatamente y le avisamos
+                    await window.redSupabase.auth.signOut();
+                    alertDiv.style.display = 'block';
+                    alertDiv.textContent = "Tu solicitud de ingreso aún está siendo revisada por el administrador. Te enviaremos un correo apenas sea validada.";
+                    return;
+                }
+            }
+
+            // Si está todo correcto, avanza al panel principal
+            window.location.href = 'dashboard.html';
         });
     </script>
 </body>

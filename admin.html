@@ -46,6 +46,7 @@
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
         th { padding: 12px; border-bottom: 2px solid var(--border); color: var(--primary); font-weight: 600; }
         td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr { transition: background-color 0.2s; }
         tr:hover { background-color: #fafafa; }
 
         /* select de roles rápido */
@@ -54,6 +55,7 @@
         .btn-status {
             padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold;
             cursor: pointer; border: none; transition: background 0.2s;
+            display: inline-flex; align-items: center; gap: 4px;
         }
         .btn-active { background: #e6fffa; color: var(--success); }
         .btn-suspended { background: #fff5f5; color: var(--danger); }
@@ -104,4 +106,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
