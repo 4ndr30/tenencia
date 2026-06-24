@@ -1,5 +1,5 @@
 // ==========================================
-// JS/AUTH.JS - CON CREDENCIALES EMAILJS
+// JS/AUTH.JS - CON CREDENCIALES EMAILJS (CORREGIDO)
 // ==========================================
 
 // 1. Iniciar sesión (Usa la variable global única window.redSupabase)
@@ -12,74 +12,66 @@ async function loginUser(email, password) {
 }
 
 // 2. Registrar usuario + Alerta automática al Administrador por EmailJS
-// ==========================================
-// FUNCIÓN DE REGISTRO EN JS/AUTH.JS
-// ==========================================
 async function registerUser(userData) {
     try {
+        // A. Registramos al usuario en la autenticación de Supabase pasándole los metadatos exactos
         const { data, error } = await window.redSupabase.auth.signUp({
             email: userData.email,
             password: userData.password,
-            // AQUÍ ESTÁ EL TRUCO: Pasarle los metadatos exactos que espera el Trigger
             options: {
                 data: {
-                    nombre_completo: userData.nombre, // Mapea 'nombre' a 'nombre_completo'
+                    nombre_completo: userData.nombre, // Mapea 'nombre' a 'nombre_completo' para el Trigger
                     organizacion: userData.organizacion,
                     telefono: userData.telefono
                 }
             }
         });
 
-        if (error) throw error;
+        // Si hubo un error en Supabase (ej: contraseña corta, mail ya registrado), lo cortamos acá
+        if (error) {
+            return { data, error };
+        }
+
+        // B. Si el registro en Supabase fue exitoso, disparamos la alerta al Admin vía EmailJS
+        if (data && data.user) {
+            try {
+                // Construimos la URL inteligente hacia tu panel de administración localizándolo con el ID del usuario
+                const urlGestionAdmin = `${window.location.origin}/admin.html?usuario_id=${data.user.id}`;
+
+                // Mapeamos las variables exactamente como las configuraste en tu plantilla de EmailJS
+                const templateParams = {
+                    nuevo_nombre: userData.nombre,
+                    nuevo_email: userData.email,
+                    nueva_organizacion: userData.organizacion || "No especificada",
+                    nuevo_telefono: userData.telefono || "No especificado",
+                    enlace_aprobacion: urlGestionAdmin
+                };
+
+                // Credenciales asignadas de tu cuenta EmailJS
+                const SERVICE_ID = 'service_podqhnk'; 
+                const TEMPLATE_ID = 'template_djsa7nr';
+                const PUBLIC_KEY = '4lUPQo1047qOFaEAC'; 
+
+                // Ejecutamos el envío asincrónico
+                if (window.emailjs) {
+                    // Pasamos explícitamente la PUBLIC_KEY en el send para blindar el envío de fallos de inicialización
+                    await window.emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+                    console.log("Alerta de auditoría enviada al administrador exitosamente.");
+                } else {
+                    console.warn("Librería EmailJS no detectada en el HTML. Revisar imports.");
+                }
+
+            } catch (emailError) {
+                console.error("Error crítico al intentar despachar el email de notificación:", emailError);
+            }
+        }
+
         return { data, error: null };
 
     } catch (error) {
-        console.error("Error en registerUser:", error.message);
+        console.error("Error general en registerUser:", error.message);
         return { data: null, error };
     }
-}
-
-    // Si hubo un error en Supabase (ej: contraseña corta, mail ya registrado), lo cortamos acá
-    if (error) {
-        return { data, error };
-    }
-
-    // B. Si el registro en Supabase fue exitoso, disparamos la alerta al Admin vía EmailJS
-    if (data && data.user) {
-        try {
-            // Construimos la URL inteligente hacia tu panel de administración localizándolo con el ID del usuario
-            const urlGestionAdmin = `${window.location.origin}/admin.html?usuario_id=${data.user.id}`;
-
-            // Mapeamos las variables exactamente como las configuraste en tu plantilla de EmailJS
-            const templateParams = {
-                nuevo_nombre: userData.nombre,
-                nuevo_email: userData.email,
-                nueva_organizacion: userData.organizacion || "No especificada",
-                nuevo_telefono: userData.telefono || "No especificado",
-                enlace_aprobacion: urlGestionAdmin
-            };
-
-            // Credenciales asignadas de tu cuenta EmailJS
-            const SERVICE_ID = 'service_podqhnk'; 
-            const TEMPLATE_ID = 'template_djsa7nr';
-            const PUBLIC_KEY = '4lUPQo1047qOFaEAC'; 
-
-            // Ejecutamos el envío asincrónico
-            if (window.emailjs) {
-                // Pasamos explícitamente la PUBLIC_KEY en el send para blindar el envío de fallos de inicialización
-                await window.emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
-                console.log("Alerta de auditoría enviada al administrador exitosamente.");
-            } else {
-                console.warn("Librería EmailJS no detectada en el HTML. Revisar imports.");
-            }
-
-        } catch (emailError) {
-            // Registramos el error de correo en consola para no trabar el flujo principal si EmailJS falla
-            console.error("Error crítico al intentar despachar el email de notificación:", emailError);
-        }
-    }
-
-    return { data, error };
 }
 
 // 3. Cerrar sesión
