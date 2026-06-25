@@ -3,28 +3,21 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Inicialización de iconos Lucide tras cargar el DOM
-    if (window.lucide) { window.lucide.createIcons(); }
-    
-    // Verificación de autenticación y carga de miembros
     setTimeout(async () => {
         try {
-            const perfil = await checkAuth('admin');
+            const perfil = await checkAuth();
             if (!perfil) return;
-            await cargarMiembros();
-
-            // Configuración del botón logout
-            const btnLogout = document.getElementById('btnLogout');
-            if (btnLogout) {
-                btnLogout.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    await logoutUser();
-                });
+            if (perfil.rol !== 'admin' && perfil.rol !== 'moderador') {
+                window.location.href = 'dashboard.html';
+                return;
             }
+
+            initAppShell('admin', perfil);
+            await cargarMiembros();
         } catch (err) {
-            console.error("Error al inicializar el panel:", err);
+            console.error('Error al inicializar el panel:', err);
         }
-    }, 500);
+    }, 300);
 });
 
 async function cargarMiembros() {
@@ -74,8 +67,6 @@ async function cargarMiembros() {
         `;
         tbody.appendChild(tr);
     });
-    
-    if (window.lucide) { window.lucide.createIcons(); }
 }
 
 async function cambiarRol(userId, nuevoRol) {

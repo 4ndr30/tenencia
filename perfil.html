@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Red Colaborativa</title>
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <nav class="sidebar" id="app-sidebar"></nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Mi Perfil</h1>
+            <p>Completá tus datos de contacto de forma opcional para que otras organizaciones de la red puedan comunicarse con vos.</p>
+        </div>
+
+        <form id="formPerfil">
+            <div class="profile-layout">
+                <div class="panel avatar-section">
+                    <div class="panel-body">
+                        <img id="avatarPreview" class="avatar-preview" alt="Tu foto" style="display:none;">
+                        <div id="avatarPlaceholder" class="avatar-preview-placeholder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+                        </div>
+                        <div class="avatar-upload form-group">
+                            <label>Foto de perfil (opcional)</label>
+                            <input type="file" id="fotoInput" accept="image/jpeg,image/png,image/webp,image/gif">
+                            <span class="form-hint">JPG, PNG o WebP. Máximo 2 MB.</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnQuitarFoto" style="display:none; width:100%; margin-top:8px;">Quitar foto</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3>Datos personales y contacto</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre completo</label>
+                                <input type="text" id="pfNombre" placeholder="Tu nombre">
+                            </div>
+                            <div class="form-group">
+                                <label>Organización / Veterinaria</label>
+                                <input type="text" id="pfOrganizacion" placeholder="Fundación, refugio, vet...">
+                            </div>
+                            <div class="form-group">
+                                <label>Email de acceso (solo lectura)</label>
+                                <input type="email" id="pfEmailAuth" class="readonly-field" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Email de contacto público</label>
+                                <input type="email" id="pfEmailContacto" placeholder="Opcional — visible en la red">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" id="pfTelefono" placeholder="Opcional">
+                            </div>
+                            <div class="form-group">
+                                <label>WhatsApp</label>
+                                <input type="text" id="pfWhatsapp" placeholder="Ej: 5491123456789">
+                            </div>
+                            <div class="form-group">
+                                <label>Instagram</label>
+                                <input type="text" id="pfInstagram" placeholder="Usuario o URL completa">
+                            </div>
+                            <div class="form-group">
+                                <label>Facebook</label>
+                                <input type="text" id="pfFacebook" placeholder="Usuario o URL completa">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Sitio web</label>
+                                <input type="url" id="pfSitioWeb" placeholder="https://...">
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label>Presentación / bio</label>
+                                <textarea id="pfBio" rows="3" placeholder="Contá brevemente sobre tu trabajo o organización..."></textarea>
+                            </div>
+                        </div>
+
+                        <label class="checkbox-label" style="margin-top:8px;">
+                            <input type="checkbox" id="pfPublico" checked>
+                            Mostrar mi perfil en la Red de Contactos
+                        </label>
+                        <p class="form-hint" style="margin-top:6px;">Si desactivás esta opción, tu ficha no aparecerá en el directorio público de miembros.</p>
+
+                        <div class="save-bar">
+                            <button type="submit" class="btn btn-primary" id="btnGuardarPerfil">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                Guardar cambios
+                            </button>
+                            <a href="comunidad.html" class="btn btn-secondary">Ver Red de Contactos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/perfil.js"></script>
+</body>
+</html>

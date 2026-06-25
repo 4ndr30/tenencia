@@ -4,407 +4,176 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Red Colaborativa - Panel Principal</title>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #1e3f20;
-            --primary-light: #2d5a30;
-            --accent: #d97706;
-            --bg-main: #f4f6f4;
-            --bg-card: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #4b5563;
-            --border: #e5e7eb;
-            --danger: #dc2626;
-            --success: #16a34a;
-            --radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* BARRA LATERAL (NAVBAR) */
-        .sidebar {
-            width: 280px;
-            background-color: var(--primary);
-            color: white;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: fixed;
-            height: 100vh;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 40px;
-        }
-
-        .brand h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .user-info {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-bottom: 30px;
-        }
-
-        .user-info p {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .user-info span {
-            font-size: 12px;
-            color: #cbd5e1;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-grow: 1;
-        }
-
-        .nav-links a {
-            color: #e2e8f0;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: all 0.2s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            background-color: var(--primary-light);
-            color: white;
-        }
-
-        .btn-logout {
-            color: #fca5a5 !important;
-        }
-        .btn-logout:hover {
-            background-color: rgba(220, 38, 38, 0.2) !important;
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            margin-left: 280px;
-            flex-grow: 1;
-            padding: 40px;
-            max-width: 1200px;
-        }
-
-        /* BARRA DE BÚSQUEDA UNIVERSAL */
-        .search-box {
-            background-color: var(--bg-card);
-            padding: 20px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-
-        .search-group {
-            display: flex;
-            gap: 15px;
-        }
-
-        .search-group input {
-            flex-grow: 1;
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-group input:focus {
-            border-color: var(--primary-light);
-        }
-
-        /* BOTONES GENERALES */
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-        }
-
-        /* AREA DE RESULTADOS / TARJETAS */
-        .adoptante-profile-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        /* ESTRUCTURA FORMULARIOS */
-        .form-card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 35px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-group label {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: var(--primary-light);
-        }
-
-        /* LÍNEA DE TIEMPO / HISTORIAL */
-        .timeline {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .timeline-item {
-            position: relative;
-            padding-left: 20px;
-            border-left: 2px solid var(--border);
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main-content { margin-left: 0; padding: 20px; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+    <nav class="sidebar" id="app-sidebar"></nav>
 
-    <!-- MENÚ LATERAL DE NAVEGACIÓN -->
-   <nav class="sidebar">
-    <div>
-        <div class="brand">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check"><path d="M20 13c0 5-3.5 7.5-7.66 9.7a1 1 0 0 1-.68 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 .76-.97l8-2a1 1 0 0 1 .48 0l8 2A1 1 0 0 1 20 6z"/><path d="m9 12 2 2 4-4"/></svg>
-            <h2>Red Colaborativa</h2>
-        </div>
-
-        <div class="user-info">
-            <p id="lblUsuario">Cargando usuario...</p>
-            <span id="lblOrganizacion">Verificando red...</span>
-        </div>
-
-        <ul class="nav-links">
-            <li>
-                <a href="dashboard.html" class="active">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    Auditoría y Altas
-                </a>
-            </li>
-            <li id="adminLink" style="display: none;">
-                <a href="admin.html">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h.01"/><path d="M17 7h.01"/><path d="M7 17h.01"/><path d="M17 17h.01"/><path d="M12 12h.01"/></svg>
-                    Panel de Control Admin
-                </a>
-            </li>
-        </ul>
-    </div>
-
-    <ul class="nav-links">
-        <li>
-            <a href="#" id="btnModalClave" style="color: var(--text, #4a5568); text-decoration: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.828-.828A5 5 0 1 0 3.414 7.414l-.828.828z"/><circle cx="17" cy="7" r="1"/></svg>
-                Cambiar Contraseña
-            </a>
-        </li>
-        <li>
-            <a href="#" id="btnLogout" class="btn-logout">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                Cerrar Sesión
-            </a>
-        </li>
-    </ul>
-</nav>
-
-    <!-- CUERPO OPERATIVO CENTRAL -->
     <main class="main-content">
-        
-        <!-- BARRA DE BÚSQUEDA INTELIGENTE UNIVERSAL -->
+        <div class="page-header">
+            <h1>Auditoría de Adoptantes</h1>
+            <p>Consultá el listado completo, buscá fichas con historial y registrá nuevos adoptantes con datos de vivienda y comportamiento.</p>
+        </div>
+
         <div class="search-box">
             <div class="search-group">
-                <input type="text" id="txtSearchDni" placeholder="Buscá por Nombre, Apellido, DNI, Teléfono o Dirección...">
-                <button class="btn btn-primary" id="btnSearch" style="width: auto;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    Buscar en la Red
-                </button>
+                <input type="text" id="txtSearchDni" placeholder="Filtrar o buscar por nombre, apellido, DNI, teléfono, dirección o email...">
+                <button class="btn btn-primary" id="btnSearch">Ver ficha completa</button>
             </div>
         </div>
 
-        <!-- ÁREA DINÁMICA: RENDERIZACIÓN DE COINCIDENCIAS E HISTORIALES -->
+        <div class="panel">
+            <div class="panel-header">
+                <h3>Todos los adoptantes</h3>
+                <button class="btn btn-secondary btn-sm" id="btnRefreshList">Actualizar listado</button>
+            </div>
+            <div class="panel-body panel-body-flush">
+                <div style="overflow-x: auto;">
+                    <table class="listado-table">
+                        <thead>
+                            <tr>
+                                <th>Adoptante</th>
+                                <th>DNI</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Alertas</th>
+                                <th>Reconoc.</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="listadoBody">
+                            <tr><td colspan="7" class="text-muted">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <span class="pagination-info" id="lblTotalAdoptantes">—</span>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <button class="btn btn-secondary btn-sm" id="btnPrevPage">Anterior</button>
+                        <span class="pagination-info" id="lblPagina">—</span>
+                        <button class="btn btn-secondary btn-sm" id="btnNextPage">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="resultArea" style="display: none;"></div>
 
-        <!-- FORMULARIO DE ACCIÓN UNIFICADA: ALTA + ALERTA -->
-        <div class="form-container" style="margin-top: 30px;">
-            <div class="form-card">
-                <h3 style="color: var(--primary); margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
-                    Ficha de Registro Inmediato (Adoptante e Incidente)
-                </h3>
-                
-                <form id="formUnificado">
-                    
-                    <!-- PARTE A: ANTECEDENTES COMPORTAMIENTO DEL INFRACTOR/ADOPTANTE -->
-                    <h4 style="margin-bottom: 15px; color: var(--accent); font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">1. Datos de Ubicación e Identidad (Cargá lo que poseas)</h4>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 25px;">
-                        <div class="form-group">
-                            <label>Nombre</label>
-                            <input type="text" id="adNombre" placeholder="Ej: Juan Carlos">
-                        </div>
-                        <div class="form-group">
-                            <label>Apellido</label>
-                            <input type="text" id="adApellido" placeholder="Ej: Pérez">
-                        </div>
-                        <div class="form-group">
-                            <label>DNI / Pasaporte</label>
-                            <input type="text" id="adDni" placeholder="Sin puntos ni espacios">
-                        </div>
-                        <div class="form-group">
-                            <label>Teléfono Celular / Fijo</label>
-                            <input type="text" id="adTel" placeholder="Ej: 1123456789">
-                        </div>
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label>Dirección / Croquis del Domicilio</label>
-                            <input type="text" id="adDireccion" placeholder="Ej: Manzana 4 Casa 12, Barrio San Jorge o Calle Falsa 123">
-                        </div>
-                    </div>
+        <div class="form-card" style="margin-top: 30px;">
+            <h3 style="color: var(--primary); margin-bottom: 25px;">Nueva ficha de adoptante</h3>
 
-                    <!-- PARTE B: ANTECEDENTES COMPORTAMIENTO (OPCIONAL) -->
-                    <h4 style="margin-bottom: 15px; color: var(--accent); font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px;">2. Reportar Infracción o Alerta Inmediata (Opcional)</h4>
-                    
+            <form id="formUnificado">
+                <h4 class="section-subtitle">1. Identidad y contacto</h4>
+                <div class="form-grid" style="margin-bottom: 20px;">
                     <div class="form-group">
-                        <label>Título Breve de la Infracción</label>
-                        <input type="text" id="incTitulo" placeholder="Ej: Abandono en vía pública / Incumplimiento de castración">
+                        <label>Nombre</label>
+                        <input type="text" id="adNombre" placeholder="Ej: Juan Carlos">
                     </div>
-
                     <div class="form-group">
-                        <label>Nivel de Alerta / Gravedad</label>
-                        <select id="incGravedad">
-                            <option value="leve">Leve (Poco espacio / Respuestas evasivas)</option>
-                            <option value="moderado">Moderado (Falta de vacunas / Desinterés / Recidiva)</option>
-                            <option value="grave" selected>Grave (Maltrato físico evidente / Pérdida / Crueldad / Amenazas)</option>
+                        <label>Apellido</label>
+                        <input type="text" id="adApellido" placeholder="Ej: Pérez">
+                    </div>
+                    <div class="form-group">
+                        <label>DNI / Pasaporte</label>
+                        <input type="text" id="adDni" placeholder="Sin puntos ni espacios">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="adTel" placeholder="Ej: 1123456789">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="adEmail" placeholder="Ej: juan@email.com">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Dirección</label>
+                        <input type="text" id="adDireccion" placeholder="Ej: Manzana 4 Casa 12, Barrio San Jorge">
+                    </div>
+                </div>
+
+                <h4 class="section-subtitle">2. Vivienda y datos de interés</h4>
+                <div class="form-grid" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Condición de vivienda</label>
+                        <select id="adCondicionVivienda">
+                            <option value="">Seleccionar...</option>
+                            <option value="propietario">Propietario</option>
+                            <option value="inquilino">Inquilino</option>
+                            <option value="familiar">Vive con familiar</option>
+                            <option value="otro">Otro</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label>Crónica y Descripción Detallada de los Hechos</label>
-                        <textarea id="incDesc" rows="4" placeholder="Detallá detalladamente lo ocurrido para alertar de forma fidedigna a otras agrupaciones..."></textarea>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" id="adTerrenoCercado"> Tiene terreno cercado</label>
+                            <label class="checkbox-label"><input type="checkbox" id="adEsPropietario"> Es propietario del inmueble</label>
+                            <label class="checkbox-label"><input type="checkbox" id="adBuenAdoptante"> Marcar como buen adoptante</label>
+                        </div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Evidencia Respaldatoria (Fotos de capturas, contratos rotos, denuncias)</label>
-                       <input type="file" id="incArchivo" multiple style="border: 1px dashed var(--border); padding: 12px; background: #fafafa; border-radius: 8px;">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Observaciones / otros datos de interés</label>
+                        <textarea id="adObservaciones" rows="3" placeholder="Ej: Tiene otros animales, patio amplio, referencias verificadas..."></textarea>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 100%; padding: 15px; font-weight: 600;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Impactar Datos en Red Unificada
-                    </button>
-                </form>
-            </div>
+                <h4 class="section-subtitle">3. Reporte de comportamiento (opcional)</h4>
+                <div class="radio-group">
+                    <label class="radio-label"><input type="radio" name="tipoReporte" value="ninguno" checked> Solo registrar datos</label>
+                    <label class="radio-label"><input type="radio" name="tipoReporte" value="infraccion"> Reportar infracción / alerta</label>
+                    <label class="radio-label"><input type="radio" name="tipoReporte" value="buen_adoptante"> Reconocer buen adoptante</label>
+                </div>
+
+                <div id="seccionInfraccion" style="display:none;">
+                    <div class="form-group">
+                        <label>Título de la infracción</label>
+                        <input type="text" id="incTitulo" placeholder="Ej: Abandono en vía pública">
+                    </div>
+                    <div class="form-group">
+                        <label>Nivel de gravedad</label>
+                        <select id="incGravedad">
+                            <option value="leve">Leve</option>
+                            <option value="moderado">Moderado</option>
+                            <option value="grave" selected>Grave</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción detallada</label>
+                        <textarea id="incDesc" rows="4" placeholder="Detalle de los hechos..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Evidencia (fotos, capturas, documentos)</label>
+                        <input type="file" id="incArchivo" multiple style="border: 1px dashed var(--border); padding: 12px; background: #fafafa; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div id="seccionBuenAdoptante" style="display:none;">
+                    <div class="form-group">
+                        <label>Título del reconocimiento</label>
+                        <input type="text" id="posTitulo" placeholder="Ej: Adopción responsable verificada">
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción del reconocimiento</label>
+                        <textarea id="posDesc" rows="4" placeholder="Detalle de por qué se reconoce como buen adoptante..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Evidencia (opcional)</label>
+                        <input type="file" id="posArchivo" multiple style="border: 1px dashed var(--border); padding: 12px; background: #fafafa; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 100%; padding: 15px; font-weight: 600;">
+                    Guardar ficha en la red
+                </button>
+            </form>
         </div>
     </main>
-    
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/config.js"></script>
     <script src="js/supabase.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/layout.js"></script>
     <script src="js/adoptantes.js"></script>
-    
-    <script>
-        // Cambiar contraseña desde la opción interactiva del menú lateral
-        document.getElementById('btnModalClave').addEventListener('click', async (e) => {
-            e.preventDefault();
-            
-            // Abrimos la ventana flotante nativa para pedir la clave
-            const nuevaClave = prompt("Ingresá tu nueva contraseña personal (mínimo 6 caracteres):");
-            
-            // Si el usuario presiona "Cancelar" o cierra la ventana, cortamos la ejecución
-            if (nuevaClave === null) return; 
-            
-            // Validamos que tenga la longitud correcta
-            if (nuevaClave.trim().length < 6) {
-                alert("La contraseña es demasiado corta. Debe contener al menos 6 caracteres.");
-                return;
-            }
-
-            // Llama a la función que ya guardamos en tu js/auth.js
-            await window.actualizarMiContrasena(nuevaClave.trim());
-        });
-    </script>
-
 </body>
 </html>
