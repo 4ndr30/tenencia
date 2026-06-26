@@ -755,3 +755,32 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
         grid-template-columns: 1fr;
     }
 }
+/* Aseguramos que el padre sea el punto de anclaje */
+.password-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Ajuste del input para no tapar el ojo */
+#password {
+    width: 100% !important;
+    padding-right: 40px !important;
+    box-sizing: border-box !important;
+}
+
+/* Posicionamiento absoluto del botón respecto al div padre */
+.toggle-password {
+    position: absolute !important;
+    right: 5px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}

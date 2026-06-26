@@ -201,6 +201,7 @@ body {
     }
 }
 
+
 /* Forzar que la tabla sea responsive */
 @media (max-width: 768px) {
     table, thead, tbody, th, td, tr { 
